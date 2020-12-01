@@ -5,11 +5,18 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "load": "node load-books.js"
   },
   "dependencies": {
+    "autoprefixer": "^9",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "lodash.uniqby": "^4.7.0",
+    "postcss": "^7",
+    "postcss-loader": "^4.1.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "vue": "^2.6.11",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -32,12 +39,24 @@
     },
     "extends": [
       "plugin:vue/essential",
+      "plugin:vue/strongly-recommended",
+      "plugin:vue/recommended",
       "@vue/standard"
     ],
+    "rules": {
+      "object-curly-spacing": "off",
+      "vue/max-attributes-per-line": [
+        "error",
+        {
+          "singleline": 3
+        }
+      ],
+      "vue/no-v-html": "off",
+      "prefer-const": "off"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
-    },
-    "rules": {}
+    }
   },
   "browserslist": [
     "> 1%",
