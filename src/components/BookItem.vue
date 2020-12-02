@@ -1,5 +1,5 @@
 <template>
-  <div class="flex mb-10 mx-2">
+  <div class="flex">
     <div class="px-2 flex-grow">
       <h1 class="font-bold">
         <a :href="book.url">{{ book.title }}</a>
@@ -59,7 +59,7 @@
       <div class="text-sm description" v-html="book.description" />
     </div>
 
-    <div class="max-h-96 w-72 flex-shrink-0 px-2">
+    <div class="max-h-96 w-64 flex-shrink-0 pl-2">
       <img :src="`/covers/${book.id}.jpg`" alt="" class="h-96 object-contain object-left-top">
     </div>
   </div>

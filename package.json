@@ -11,6 +11,7 @@
   "dependencies": {
     "autoprefixer": "^9",
     "core-js": "^3.6.5",
+    "localforage": "^1.9.0",
     "lodash.uniqby": "^4.7.0",
     "postcss": "^7",
     "postcss-loader": "^4.1.0",

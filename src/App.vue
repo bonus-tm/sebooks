@@ -1,6 +1,38 @@
 <template>
   <div id="app">
-    <div class="fixed ml-96 mt-4">
+    <div class="fixed overflow-y-scroll w-96 h-screen border-r border-yellow-400 border-solid">
+      <ul class="bg-yellow-50">
+        <li v-for="(author, i) in authors" :key="`auth-${i}`">
+          <span class="pl-10 text-sm">{{ author.creator }}</span>
+          <ul class="pb-4">
+            <li
+              v-for="book in booksByAuthor(author.creator)"
+              :key="`auth-${i}-${book.id}`"
+              :ref="book.id"
+              :class="cssTitleInList(book.id)"
+              class="flex pr-4 text-lg cursor-pointer"
+              @click="openBook(book.id)"
+            >
+              <div
+                :class="{'bg-yellow-100': book.id === opened}"
+                class="pl-4 w-9"
+              >
+                <icon-star
+                  v-if="userData[book.id] && userData[book.id].marked"
+                  class="w-5 h-5 mt-1 text-yellow-800"
+                  filled
+                />
+              </div>
+              <div :class="{'font-bold': book.id === opened}" class="pl-1">
+                {{ book.title }}
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="absolute left-96 r-0 p-4">
       <book-item
         v-if="opened"
         :book="openedBook"
@@ -8,38 +40,11 @@
         @toggle="toggle"
       />
     </div>
-    <ul class="fixed overflow-y-scroll w-96 h-screen">
-      <li v-for="(author, i) in authors" :key="`auth-${i}`">
-        <span class="pl-10 text-sm">{{ author.creator }}</span>
-        <ul class="pb-4">
-          <li
-            v-for="book in booksByAuthor(author.creator)"
-            :key="`auth-${i}-${book.id}`"
-            :class="cssTitleInList(book.id)"
-            class="flex pr-4 text-lg cursor-pointer hover:bg-yellow-50"
-            @click="opened = book.id"
-          >
-            <div
-              :class="{'bg-yellow-100': book.id === opened}"
-              class="pl-4 w-9"
-            >
-              <icon-star
-                v-if="userData[book.id] && userData[book.id].marked"
-                class="w-5 h-5 mt-1"
-                filled
-              />
-            </div>
-            <div class="pl-1" :class="{'font-bold': book.id === opened}">
-              {{ book.title }}
-            </div>
-          </li>
-        </ul>
-      </li>
-    </ul>
   </div>
 </template>
 
 <script>
+import localForage from 'localforage'
 import uniqBy from 'lodash.uniqby'
 import BookItem from '@/components/BookItem'
 import books from './books.json'
@@ -91,18 +96,34 @@ export default {
       return {}
     }
   },
+  watch: {
+    opened (newValue) {
+      this.$refs[newValue][0].scrollIntoView({behavior: 'smooth'})
+    }
+  },
+  async created () {
+    this.opened = await localForage.getItem('opened')
+    let userData = await localForage.getItem('userData')
+    if (userData) this.userData = userData
+  },
   methods: {
+    async openBook (bookId) {
+      this.opened = bookId
+      await localForage.setItem('opened', this.opened)
+    },
     booksByAuthor (creator) {
       return this.books.filter(book => book.creator === creator)
     },
     cssTitleInList (bookId) {
       return {'text-gray-400': this.userData[bookId]?.read}
     },
-    toggle (field) {
+    async toggle (field) {
       if (!this.userData[this.opened]) {
         this.$set(this.userData, this.opened, {marked: false, read: false})
       }
       this.userData[this.opened][field] = !this.userData[this.opened][field]
+
+      await localForage.setItem('userData', this.userData)
     }
   }
 }
