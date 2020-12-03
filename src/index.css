@@ -1,6 +1,9 @@
 @tailwind base;
 
 @layer base {
+  body {
+    @apply dark:bg-gray-800 dark:text-yellow-100;
+  }
   h1 {
     @apply text-2xl;
   }
@@ -14,7 +17,7 @@
   }
 
   a {
-    @apply text-yellow-800 underline;
+    @apply text-yellow-800 dark:text-yellow-300 underline;
   }
 
   p {

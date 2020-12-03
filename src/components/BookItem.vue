@@ -3,11 +3,13 @@
     <!-- Mark and Read -->
     <div class="px-4">
       <div
-        class="mt-1 mb-10 text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50"
+        class="mt-1 mb-10 text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50 dark:hover:bg-gray-600"
         @click="$emit('toggle', 'read')"
       >
-        <a :href="book.url" class="text-black no-underline" target="_blank">
-          <img alt="" class="w-14 mx-auto" src="/sebooks-logo-black-full.svg">
+        <a :href="book.url" class="text-black dark:text-yellow-100 no-underline" target="_blank">
+          <div class="px-2">
+            <icon-sebooks />
+          </div>
           <div class="text-sm">
             Get book
           </div>
@@ -15,7 +17,7 @@
       </div>
 
       <div
-        class="text-center w-24 mb-2 p-2 cursor-pointer rounded hover:bg-yellow-50"
+        class="text-center w-24 mb-2 p-2 cursor-pointer rounded hover:bg-yellow-50 dark:hover:bg-gray-600"
         @click="$emit('toggle', 'marked')"
       >
         <icon-star :filled="userData.marked" class="mx-auto w-8 h-8" />
@@ -24,7 +26,7 @@
         </div>
       </div>
       <div
-        class="text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50"
+        class="text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50 dark:hover:bg-gray-600"
         @click="$emit('toggle', 'read')"
       >
         <icon-read :filled="userData.read" class="mx-auto w-8 h-8" />
@@ -36,10 +38,10 @@
 
     <!-- Book Info -->
     <div class="px-2 flex-grow">
-      <h3 class="text-xl text-yellow-800">
+      <h3 class="text-xl text-yellow-800 dark:text-yellow-200">
         <span :title="book.authorFullName">{{ book.creator }}</span>
       </h3>
-      <h1 class="mb-4 font-bold text-5xl text-yellow-800 opacity-80">
+      <h1 class="mb-4 font-bold text-5xl text-yellow-800 dark:text-yellow-200 opacity-80">
         {{ book.title }}
       </h1>
 
@@ -47,7 +49,7 @@
         <div
           v-for="(tag, i) in book.tags"
           :key="`tag-${i}`"
-          class="rounded px-1 bg-yellow-600 text-white font-bold"
+          class="rounded px-1 bg-yellow-600 dark:bg-yellow-800 text-white dark:text-yellow-100 font-bold"
         >
           {{ tag }}
         </div>
@@ -60,7 +62,7 @@
         {{ Math.round(book.readingEase) }}
         {{ readingEaseDescription }}
       </div>
-      <div class="text-indigo-700">
+      <div class="text-indigo-700 dark:text-indigo-300">
         <div
           v-for="(subject, i) in book.subject"
           :key="`subject-${i}`"
@@ -69,15 +71,15 @@
         </div>
       </div>
 
-      <hr class="mt-8 max-w-2xl border-yellow-600 opacity-50">
+      <hr class="mt-8 max-w-2xl border-yellow-600 dark:border-gray-600 opacity-50">
 
       <div class="mt-8 max-w-2xl description" v-html="book.description" />
     </div>
 
     <!-- Book cover -->
     <div class="w-1/3 flex-shrink-0 pl-2">
-      <div class="p-1 border-2 border-yellow-600 bg-yellow-100 rounded shadow-lg">
-        <div class="p-1 border-4 border-yellow-600 bg-yellow-100 rounded-sm">
+      <div class="p-1 border-2 border-yellow-600 dark:border-gray-600 bg-yellow-100 dark:bg-gray-800 rounded shadow-lg">
+        <div class="p-1 border-4 border-yellow-600 dark:border-gray-600 bg-yellow-100 dark:bg-gray-800 rounded-sm">
           <img :src="`/covers/${book.id}.jpg`" alt="" class="object-contain object-left-top rounded-sm">
         </div>
       </div>
@@ -88,10 +90,11 @@
 <script>
 import IconStar from '@/components/IconStar'
 import IconRead from '@/components/IconRead'
+import IconSebooks from '@/components/IconSebooks'
 
 export default {
   name: 'BookItem',
-  components: {IconRead, IconStar},
+  components: {IconSebooks, IconRead, IconStar},
   props: {
     book: {type: Object, required: true},
     userData: {

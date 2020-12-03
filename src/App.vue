@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <div class="fixed overflow-y-scroll w-96 h-screen border-r border-yellow-400 border-solid">
-      <ul class="bg-yellow-50">
+    <div class="fixed overflow-y-scroll w-96 h-screen border-r border-yellow-400 dark:border-gray-600 border-solid">
+      <ul class="bg-yellow-50 dark:bg-gray-700">
         <li v-for="(author, i) in authors" :key="`auth-${i}`">
           <span class="pl-10 text-sm">{{ author.creator }}</span>
           <ul class="pb-4">
@@ -13,17 +13,17 @@
               class="flex pr-4 text-lg cursor-pointer"
               @click="openBook(book.id)"
             >
-              <div
-                :class="{'bg-yellow-100': book.id === opened}"
-                class="pl-4 w-9"
-              >
+              <div class="pl-4 w-9">
                 <icon-star
                   v-if="userData[book.id] && userData[book.id].marked"
-                  class="w-5 h-5 mt-1 text-yellow-800"
+                  class="w-5 h-5 mt-1 text-yellow-800 dark:text-yellow-300"
                   filled
                 />
               </div>
-              <div :class="{'font-bold': book.id === opened}" class="pl-1">
+              <div
+                :class="[book.id === opened ? 'font-bold dark:text-yellow-300' : '']"
+                class="pl-1"
+              >
                 {{ book.title }}
               </div>
             </li>
@@ -115,7 +115,10 @@ export default {
       return this.books.filter(book => book.creator === creator)
     },
     cssTitleInList (bookId) {
-      return {'text-gray-400': this.userData[bookId]?.read}
+      return {
+        'text-gray-400': this.userData[bookId]?.read,
+        'dark:text-gray-500': this.userData[bookId]?.read
+      }
     },
     async toggle (field) {
       if (!this.userData[this.opened]) {
