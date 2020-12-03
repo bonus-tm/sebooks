@@ -6,7 +6,7 @@
         class="mt-1 mb-10 text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50"
         @click="$emit('toggle', 'read')"
       >
-        <a :href="book.url" target="_blank" class="text-black no-underline">
+        <a :href="book.url" class="text-black no-underline" target="_blank">
           <img alt="" class="w-14 mx-auto" src="/sebooks-logo-black-full.svg">
           <div class="text-sm">
             Get book
@@ -60,7 +60,7 @@
         {{ Math.round(book.readingEase) }}
         {{ readingEaseDescription }}
       </div>
-      <div class="text-purple-800">
+      <div class="text-indigo-700">
         <div
           v-for="(subject, i) in book.subject"
           :key="`subject-${i}`"
@@ -69,13 +69,17 @@
         </div>
       </div>
 
-      <div class="mt-16 max-w-2xl description" v-html="book.description" />
+      <hr class="mt-8 max-w-2xl border-yellow-600 opacity-50">
+
+      <div class="mt-8 max-w-2xl description" v-html="book.description" />
     </div>
 
     <!-- Book cover -->
     <div class="w-1/3 flex-shrink-0 pl-2">
-      <div class="shadow-lg">
-        <img :src="`/covers/${book.id}.jpg`" alt="" class="object-contain object-left-top">
+      <div class="p-1 border-2 border-yellow-600 bg-yellow-100 rounded shadow-lg">
+        <div class="p-1 border-4 border-yellow-600 bg-yellow-100 rounded-sm">
+          <img :src="`/covers/${book.id}.jpg`" alt="" class="object-contain object-left-top rounded-sm">
+        </div>
       </div>
     </div>
   </div>
