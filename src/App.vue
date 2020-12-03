@@ -96,15 +96,12 @@ export default {
       return {}
     }
   },
-  watch: {
-    opened (newValue) {
-      this.$refs[newValue][0].scrollIntoView({behavior: 'smooth'})
-    }
-  },
-  async created () {
+  async mounted () {
     this.opened = await localForage.getItem('opened')
     let userData = await localForage.getItem('userData')
     if (userData) this.userData = userData
+
+    this.$refs[this.opened][0].scrollIntoView({block: 'center'})
   },
   methods: {
     async openBook (bookId) {
