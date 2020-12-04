@@ -9,5 +9,9 @@ module.exports = {
         yellow: colors.amber
       }
     }
-  }
+  },
+  purge: [
+    './src/**/*.css',
+    './src/**/*.vue'
+  ]
 }
