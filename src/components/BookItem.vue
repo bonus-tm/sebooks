@@ -80,7 +80,7 @@
     <div class="w-1/3 flex-shrink-0 pl-2">
       <div class="p-1 border-2 border-yellow-600 dark:border-gray-600 bg-yellow-100 dark:bg-gray-800 rounded shadow-lg">
         <div class="p-1 border-4 border-yellow-600 dark:border-gray-600 bg-yellow-100 dark:bg-gray-800 rounded-sm">
-          <img :src="`/covers/${book.id}.jpg`" alt="" class="object-contain object-left-top rounded-sm">
+          <img :src="`${publicPath}covers/${book.id}.jpg`" alt="" class="object-contain object-left-top rounded-sm">
         </div>
       </div>
     </div>
@@ -102,6 +102,11 @@ export default {
       default () {
         return {marked: false, read: false}
       }
+    }
+  },
+  data () {
+    return {
+      publicPath: process.env.BASE_URL
     }
   },
   computed: {
