@@ -22,7 +22,7 @@ const formatBookData = content => {
   } = content.package.metadata[0]
 
   let info = {
-    url: url.substr(4),
+    url: url.substring(4),
     title,
     subject: subject.map(({_}) => _),
     description,
@@ -30,6 +30,7 @@ const formatBookData = content => {
     creator
   }
 
+  // Дальше идёт очень замороченная хрень, но такой вот формат XML, чёрт ногу сломит
   const propertiesToUse = {
     'file-as': {
       refinesToUse: {
@@ -38,12 +39,12 @@ const formatBookData = content => {
       }
     },
     'se:subject': {key: 'tags', array: true},
-    'belongs-to-collection': {key: 'collection', keep: 'id'},
-    'collection-type': {key: 'collectionType', keep: 'refines'},
-    'group-position': {key: 'groupPosition', keep: 'refines'},
+    'belongs-to-collection': {key: 'belongsToCollection', array: true},
+    'collection-type': {key: 'collectionType', refinesKey: 'belongsToCollection'},
+    'group-position': {key: 'position', refinesKey: 'belongsToCollection', isNumber: true},
     'se:long-description': {key: 'description'},
-    'se:word-count': {key: 'wordsCount'},
-    'se:reading-ease.flesch': {key: 'readingEase'},
+    'se:word-count': {key: 'wordsCount', isNumber: true},
+    'se:reading-ease.flesch': {key: 'readingEase', isNumber: true},
     'se:url.vcs.github': {key: 'urlGithub'},
     'se:url.encyclopedia.wikipedia': {key: 'urlWikipedia'},
     'se:name.person.full-name': {
@@ -53,22 +54,39 @@ const formatBookData = content => {
     }
   }
 
-  for (let {_, $: {id, property, refines}} of meta) {
+  for (let {_: value, $: {id, property, refines}} of meta) {
     if (property in propertiesToUse) {
-      let {key, refinesToUse, array, keep} = propertiesToUse[property]
+      let {key, refinesToUse, refinesKey, array, isNumber} = propertiesToUse[property]
+
+      if (isNumber) {
+        value = Number(value)
+      }
+
       if (refinesToUse && refines in refinesToUse) {
         key = refinesToUse[refines].key
       }
+
       if (key) {
         if (array) {
-          if (!info[key]) info[key] = []
-          info[key].push(_)
+          info[key] ??= []
+
+          if (id) {
+            // массив объектов, типа коллекций
+            info[key].push({id, [key]: value})
+          } else {
+            // просто массив строк — например, теги
+            info[key].push(value)
+          }
+        } else if (refinesKey) {
+          // дописать поле в один из объектов, id которого === refines, в массиве refinesKey
+          let el = info[refinesKey].find(element => `#${element.id}` === refines)
+          el[key] = value
         } else {
-          info[key] = _
+          info[key] = value
         }
 
         if (key === 'urlGithub') {
-          info.id = _.substr(34)
+          info.id = value.substring(34)
         }
       }
     }
@@ -106,7 +124,15 @@ const copyCoverImage = (bookName, srcPath, destPath) => {
  * @returns {Promise<void>}
  */
 const main = async () => {
-  let booksDirs = fs.readdirSync(ebooksDir, {withFileTypes: true})
+  let booksDirs = []
+  // отобрать только фолдеры
+  let list = fs.readdirSync(ebooksDir, {withFileTypes: true})
+  for (let entry of list) {
+    if (entry.isDirectory()) {
+      booksDirs.push(entry)
+    }
+  }
+
   let booksCount = booksDirs.length
   console.log(`Found ${booksCount} books.\n`)
   let books = []
@@ -128,7 +154,7 @@ const main = async () => {
     }
   }
 
-  fs.writeFileSync(path.join(dir, 'src', 'books.json'), JSON.stringify(books))
+  fs.writeFileSync(path.join(dir, 'src', 'books.json'), JSON.stringify(books, null, 2))
 }
 
 main()
