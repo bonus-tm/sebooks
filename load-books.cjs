@@ -140,19 +140,21 @@ const main = async () => {
   for (let [i, bookDir] of booksDirs.entries()) {
     if (bookDir.isDirectory()) {
       try {
-        console.log(`Loading "${bookDir.name}"`)
+        process.stdout.write(`${i + 1} of ${booksCount}: "${bookDir.name}" loading... `)
+
         let bookData = await loadBookData(path.join(ebooksDir, bookDir.name))
         books.push(formatBookData(bookData))
 
-        console.log('Copy cover.jpg')
+        process.stdout.write('done, Copy cover.jpg... ')
         copyCoverImage(bookDir.name, ebooksDir, path.join(dir, 'public', 'covers'))
 
-        console.log(`OK — ${i + 1} of ${booksCount}`)
+        console.log('OK')
       } catch (e) {
         console.log(e)
       }
     }
   }
+  console.log(`\nLoaded ${books.length} books`)
 
   fs.writeFileSync(path.join(dir, 'src', 'books.json'), JSON.stringify(books, null, 2))
 }
