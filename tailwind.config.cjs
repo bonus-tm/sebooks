@@ -12,6 +12,12 @@ module.exports = {
       colors: {
         gray: colors.stone,
         yellow: colors.amber
+      },
+      fontFamily: {
+        serif: ['Charter', 'serif'],
+      },
+      maxWidth: {
+        'desc': '65ch',
       }
     }
   },

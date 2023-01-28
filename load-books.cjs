@@ -135,7 +135,12 @@ const main = async () => {
 
   let booksCount = booksDirs.length
   console.log(`Found ${booksCount} books.\n`)
-  let books = []
+
+  let result = {
+    updatedAt: null,
+    updatedAtHuman: null,
+    books: [],
+  }
 
   for (let [i, bookDir] of booksDirs.entries()) {
     if (bookDir.isDirectory()) {
@@ -143,7 +148,7 @@ const main = async () => {
         process.stdout.write(`${i + 1} of ${booksCount}: "${bookDir.name}" loading... `)
 
         let bookData = await loadBookData(path.join(ebooksDir, bookDir.name))
-        books.push(formatBookData(bookData))
+        result.books.push(formatBookData(bookData))
 
         process.stdout.write('done, Copy cover.jpg... ')
         copyCoverImage(bookDir.name, ebooksDir, path.join(dir, 'public', 'covers'))
@@ -154,9 +159,12 @@ const main = async () => {
       }
     }
   }
-  console.log(`\nLoaded ${books.length} books`)
+  console.log(`\nLoaded ${result.books.length} books`)
 
-  fs.writeFileSync(path.join(dir, 'src', 'books.json'), JSON.stringify(books, null, 2))
+  result.updatedAt = Date.now()
+  result.updatedAtHuman = Date().toLocaleString()
+
+  fs.writeFileSync(path.join(dir, 'src', 'books.json'), JSON.stringify(result, null, 2))
 }
 
 main()
