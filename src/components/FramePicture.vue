@@ -1,17 +1,42 @@
 <script setup>
-import {ref} from 'vue'
+import {computed, ref, watch} from 'vue'
+import {useRoute} from 'vue-router'
 
 const props = defineProps({
   bookId: {type: String, required: true},
 })
 const publicPath = '/'
 
-const src = ref(`${publicPath}covers/${props.bookId}.jpg`)
+const route = useRoute()
+
+watch(
+  () => route.params.bookId,
+  () => {
+    loading.value = true
+  }
+)
+
+const src = computed(() => `${publicPath}covers/${props.bookId}.jpg`)
+
+const loading = ref(false)
+const onload = () => {
+  loading.value = false
+}
 </script>
 
 <template>
   <div class="max-w-xl p-4 relative">
-    <img :src="src" alt="" class="object-contain object-left-top">
+    <img
+      :src="src"
+      alt=""
+      class="object-contain object-left-top"
+      @load="onload"
+    >
+    <div v-show="loading" class="absolute top-0 left-0 w-full h-full dark:bg-gray-800 flex items-center justify-center">
+      <div class="opacity-40">
+        Loading image
+      </div>
+    </div>
     <div class="picture-frame" />
   </div>
 </template>

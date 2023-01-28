@@ -19,8 +19,6 @@ const book = computed(() => {
   return getBookById(props.bookId)
 })
 
-const publicPath = '/'
-
 const readingEaseDescription = computed(() => {
   let value = book.value.readingEase
   if (!value) return ''
@@ -101,15 +99,6 @@ const readingEaseDescription = computed(() => {
       </div>
 
       <div class="book-tags mb-4 flex justify-center space-x-2 text-sm">
-        <!--
-        <div
-          v-for="(tag, i) in book.tags"
-          :key="`tag-${i}`"
-          class="rounded px-1 bg-yellow-600 dark:bg-yellow-800 text-white dark:text-yellow-100 font-bold"
-        >
-          {{ tag }}
-        </div>
-        -->
         <FramePlaque
           v-for="(tag, i) in book.tags"
           :key="`tag-${i}`"
@@ -140,15 +129,6 @@ const readingEaseDescription = computed(() => {
       <div class="book-desc w-full max-w-desc justify-self-end" v-html="book.description" />
 
       <div class="book-pic">
-        <!--
-        <div
-          class="p-1 max-w-xl border-2 border-yellow-600 dark:border-gray-600 bg-yellow-100 dark:bg-gray-800 rounded shadow-lg"
-        >
-          <div class="p-1 border-4 border-yellow-600 dark:border-gray-600 bg-yellow-100 dark:bg-gray-800 rounded-sm">
-            <img :src="`${publicPath}covers/${book.id}.jpg`" alt="" class="object-contain object-left-top rounded-sm">
-          </div>
-        </div>
-        -->
         <FramePicture :book-id="book.id" />
       </div>
 
