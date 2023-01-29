@@ -140,8 +140,13 @@ const main = async () => {
     updatedAt: null,
     updatedAtHuman: null,
     books: [],
+    authors: [],
+    series: [],
+    sets: [],
+    tags: [],
   }
 
+  // Получить основную инфу о книгах из XML
   for (let [i, bookDir] of booksDirs.entries()) {
     if (bookDir.isDirectory()) {
       try {
@@ -160,6 +165,78 @@ const main = async () => {
     }
   }
   console.log(`\nLoaded ${result.books.length} books`)
+
+  // Проиндексировать по авторам, сериям, сетам и тегам
+  for (let book of result.books) {
+    // авторы
+    let i = result.authors.findIndex(a => a.creator === book.creator)
+    if (i === -1) {
+      result.authors.push({
+        creator: book.creator,
+        authorSort: book.authorSort,
+        authorFullName: book.authorFullName,
+        books: [{id: book.id}],
+      })
+    } else {
+      result.authors[i].books.push({id: book.id})
+    }
+
+    // коллекции — серии и сеты
+    for (let collection of book.belongsToCollection || []) {
+      let  collectionType = collection.collectionType === 'series' ? 'series' : 'sets'
+
+      let i = result[collectionType].findIndex(c => c.name === collection.belongsToCollection)
+      if (i === -1) {
+        result[collectionType].push({
+          name: collection.belongsToCollection,
+          collectionType: collection.collectionType,
+          books: [{id: book.id, position: collection.position}],
+        })
+      } else {
+        result[collectionType][i].books.push({id: book.id, position: collection.position})
+      }
+    }
+
+    // теги
+    for (let tag of book.tags) {
+      let i = result.tags.findIndex(t => t.name === tag)
+      if (i === -1) {
+        result.tags.push({
+          name: tag,
+          books: [{id: book.id}],
+        })
+      } else {
+        result.tags[i].books.push({id: book.id})
+      }
+    }
+  }
+
+  // отсортировать книги в авторах
+  for (let author of result.authors) {
+    author.books.sort((a, b) => {
+      if (a.id < b.id) return -1
+      if (a.id > b.id) return 1
+      return 0
+    })
+  }
+
+  // отсортировать книги в сериях и сетах
+  for (let series of result.series) {
+    series.books.sort((a, b) => a.position - b.position)
+  }
+  for (let set of result.sets) {
+    set.books.sort((a, b) => a.position - b.position)
+  }
+
+  // отсортировать книги в тегах
+  for (let tag of result.tags || []) {
+    tag.books.sort((a, b) => {
+      if (a.id < b.id) return -1
+      if (a.id > b.id) return 1
+      return 0
+    })
+  }
+
 
   result.updatedAt = Date.now()
   result.updatedAtHuman = Date().toLocaleString()
