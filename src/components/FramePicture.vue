@@ -25,11 +25,11 @@ const onload = () => {
 </script>
 
 <template>
-  <div class="max-w-xl p-4 relative">
+  <div class="inline-block relative p-4 max-w-lg">
     <img
       :src="src"
       alt=""
-      class="object-contain object-left-top"
+      class="max-h-[80vh] object-contain object-left-top"
       @load="onload"
     >
     <div v-show="loading" class="absolute top-0 left-0 w-full h-full dark:bg-gray-800 flex items-center justify-center">

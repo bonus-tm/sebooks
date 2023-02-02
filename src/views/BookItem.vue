@@ -1,19 +1,22 @@
 <script setup>
 import {computed} from 'vue'
-import IconStar from '@/components/IconStar.vue'
-import IconRead from '@/components/IconRead.vue'
-import IconSebooks from '@/components/IconSebooks.vue'
-import Footer from '@/components/Footer.vue'
 import {getBookById} from '@/services/books.js'
+import {useUserStore} from '@/services/user.js'
 import Author from '@/components/Author.vue'
 import FramePlaque from '@/components/FramePlaque.vue'
 import FramePicture from '@/components/FramePicture.vue'
+import Footer from '@/components/Footer.vue'
+import IconRead from '@/components/IconRead.vue'
+import IconSebooks from '@/components/IconSebooks.vue'
+import IconStar from '@/components/IconStar.vue'
 
 const props = defineProps({
   bookId: {type: String, default: ''},
 })
 
 console.log('BookItem')
+
+const userStore = useUserStore()
 
 const book = computed(() => {
   return getBookById(props.bookId)
@@ -40,11 +43,10 @@ const readingEaseDescription = computed(() => {
   </div>
 
   <div v-else class="the-book">
-    <!-- Mark and Read -->
+    <!-- Book spine -->
     <div class="book-spine p-4 h-full">
       <div
         class="mt-1 mb-10 text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50 dark:hover:bg-gray-600"
-        @click="$emit('toggle', 'read')"
       >
         <a :href="book.url" class="text-black dark:text-yellow-100 no-underline" target="_blank">
           <div class="px-2">
@@ -56,23 +58,28 @@ const readingEaseDescription = computed(() => {
         </a>
       </div>
 
+      <!-- Mark and Read -->
       <div
         class="text-center w-24 mb-2 p-2 cursor-pointer rounded hover:bg-yellow-50 dark:hover:bg-gray-600"
-        @click="$emit('toggle', 'marked')"
+        @click="userStore.toggleFavorite(book.id)"
       >
-        <icon-star :filled="book.marked" class="mx-auto w-8 h-8" />
+        <icon-star :filled="userStore.favorites.includes(book.id)" class="mx-auto w-8 h-8" />
+        <!--
         <div class="text-sm">
           {{ book.marked ? 'Marked' : 'Unmarked' }}
         </div>
+        -->
       </div>
       <div
         class="text-center w-24 p-2 cursor-pointer rounded hover:bg-yellow-50 dark:hover:bg-gray-600"
-        @click="$emit('toggle', 'read')"
+        @click="userStore.toggleFinished(book.id)"
       >
-        <icon-read :filled="book.read" class="mx-auto w-8 h-8" />
+        <icon-read :filled="userStore.finished.includes(book.id)" class="mx-auto w-8 h-8" />
+        <!--
         <div class="text-sm">
           {{ book.read ? 'Read' : 'Unread' }}
         </div>
+        -->
       </div>
 
       <!-- Vertical title -->
@@ -86,6 +93,7 @@ const readingEaseDescription = computed(() => {
       </div>
     </div>
 
+    <!-- Book cover -->
     <div class="book-cover">
       <div class="book-title text-center">
         <Author
@@ -98,7 +106,7 @@ const readingEaseDescription = computed(() => {
         </h1>
       </div>
 
-      <div class="book-tags mb-4 flex justify-center space-x-2 text-sm">
+      <div class="book-tags mb-4 flex justify-center space-x-2">
         <FramePlaque
           v-for="(tag, i) in book.tags"
           :key="`tag-${i}`"
@@ -106,18 +114,14 @@ const readingEaseDescription = computed(() => {
         />
       </div>
 
-      <div class="book-counts w-full max-w-desc justify-self-end">
-        <div>
-          {{ Number(book.wordsCount).toLocaleString() }}
-          words
-        </div>
-        <div>
-          {{ readingEaseDescription }}
-          <span class="text-gray-500">({{ Math.round(book.readingEase) }})</span>
-        </div>
+      <div class="book-counts w-full max-w-desc justify-self-end text-sm">
+        {{ Number(book.wordsCount).toLocaleString() }}
+        words,
+        {{ readingEaseDescription }}
+        <span class="text-gray-500">({{ Math.round(book.readingEase) }})</span>
       </div>
 
-      <div class="book-subj w-full max-w-desc justify-self-end text-indigo-700 dark:text-indigo-300">
+      <div class="book-subj w-full max-w-desc justify-self-end text-indigo-700 dark:text-indigo-300 text-sm">
         <div
           v-for="(subject, i) in book.subject"
           :key="`subject-${i}`"
@@ -164,7 +168,7 @@ const readingEaseDescription = computed(() => {
   grid-template-columns: minmax(fit-content, 3fr) minmax(fit-content, 2fr);
   grid-template-rows: repeat(4, min-content) 1fr;
   grid-auto-flow: column;
-  gap: 1rem;
+  gap: 1rem 2rem;
   grid-template-areas:
     'title  title'
     'tags   tags'

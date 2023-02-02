@@ -1,71 +1,52 @@
 <script setup>
-import IconStar from '@/components/IconStar.vue'
-import {onMounted} from 'vue'
+import {onMounted, ref} from 'vue'
+import {useRoute} from 'vue-router'
+import {storeToRefs} from 'pinia'
 import {getAuthors, getBooksByAuthor} from '@/services/books.js'
 import {useUserStore} from '@/services/user.js'
+import IconStar from '@/components/IconStar.vue'
 
-const props = defineProps({
-  openBookId: {type: String, default: ''},
-})
-
+const route = useRoute()
 const userStore = useUserStore()
+const {favorites, finished} = storeToRefs(userStore)
 
 const authors = getAuthors()
 
-/*
-const booksSorted = computed(() => {
-  return this.books.map(b => b)
-    .sort((a, b) => {
-      let fieldA = a[this.sortBy]
-      let fieldB = b[this.sortBy]
-      if (isFinite(fieldA) && isFinite(fieldB)) {
-        return fieldA - fieldB
-      } else {
-        if (fieldA < fieldB) return -1
-        if (fieldA > fieldB) return 1
-        return 0
-      }
-    })
-})
-*/
+const bookRefs = ref({})
 
 onMounted(() => {
-  // TODO fix not working scroll
-  // this.$nextTick(() => {
-  //   this.$refs[this.userData.openedBookId][0].scrollIntoView({block: 'center'})
-  // })
+  bookRefs.value[route.params.bookId].scrollIntoView({block: 'center'})
 })
-
-const cssTitleInList = bookId => {
-  return {
-    'text-gray-400': userStore.read.includes(bookId),
-    'dark:text-gray-500': userStore.read.includes(bookId)
-  }
-}
 </script>
 
 <template>
   <ul class="h-full overflow-y-scroll py-4">
     <li v-for="(author, i) in authors" :key="`auth-${i}`">
-      <span class="pl-10 text-sm">{{ author.creator }}</span>
+      <span class="pl-10 text-sm">
+        {{ author.creator }}
+      </span>
       <ul class="pb-4">
         <li
           v-for="book in getBooksByAuthor(author.creator)"
           :key="`auth-${i}-${book.id}`"
-          :ref="book.id"
-          :class="cssTitleInList(book.id)"
+          :ref="(el) => {bookRefs[book.id] = el}"
+          :class="{'bg-yellow-300': book.id === route.params.bookId}"
           class="flex pr-4 text-lg cursor-pointer"
-          @click="$emit('open', book.id)"
         >
           <div class="pl-4 w-9">
             <icon-star
-              v-if="userStore.marked.includes(book.id)"
-              class="w-5 h-5 mt-1 text-yellow-800 dark:text-yellow-300"
+              v-if="favorites.includes(book.id)"
+              :class="[book.id === route.params.bookId ? 'dark:text-yellow-800' : 'dark:text-yellow-300']"
+              class="w-5 h-5 mt-1 text-yellow-800"
               filled
             />
           </div>
           <router-link
-            :class="[book.id === props.openBookId ? 'bg-yellow-300 dark:text-yellow-800' : '']"
+            :class="[
+              {'dark:text-yellow-800': book.id === route.params.bookId},
+              {'text-gray-400': finished.includes(book.id)},
+              {'dark:text-gray-500': finished.includes(book.id)},
+            ]"
             :to="{name: 'book', params: {bookId: book.id}}"
             class="pl-1 no-underline"
           >
