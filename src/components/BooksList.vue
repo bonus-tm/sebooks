@@ -15,7 +15,7 @@ const authors = getAuthors()
 const bookRefs = ref({})
 
 onMounted(() => {
-  bookRefs.value[route.params.bookId].scrollIntoView({block: 'center'})
+  bookRefs.value[route.params.bookId]?.scrollIntoView({block: 'center'})
 })
 </script>
 
