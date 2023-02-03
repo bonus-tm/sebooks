@@ -1,6 +1,8 @@
 import {uniqBy} from 'lodash'
 import {books} from '@/books.json'
 
+export const getFirstBook = () => books[0]
+
 export const getBookById = bookId => {
   return books.find(book => book.id === bookId) || {}
 }

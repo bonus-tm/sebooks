@@ -1,5 +1,9 @@
 <script setup>
+import {useRouter} from 'vue-router'
+
 console.log('Home created')
+const router = useRouter()
+router.replace({name: 'books'})
 </script>
 
 <template>

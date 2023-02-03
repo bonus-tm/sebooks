@@ -1,5 +1,15 @@
 <script setup>
+import {useRoute, useRouter} from 'vue-router'
+import {getFirstBook} from '@/services/books.js'
 import BooksList from '@/components/BooksList.vue'
+
+const route = useRoute()
+
+if (!route.params.bookId) {
+  const book = getFirstBook()
+  const router = useRouter()
+  router.replace({name: 'book', params: {bookId: book.id}})
+}
 </script>
 
 <template>
