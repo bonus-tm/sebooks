@@ -1,5 +1,10 @@
 import {uniqBy} from 'lodash'
-import {books} from '@/books.json'
+import {authors, books, series, sets, updatedAt} from '@/books.json'
+
+export const booksCount = books.length
+
+const date = new Date(updatedAt)
+export const updated = date.toJSON().substring(0, 10)
 
 export const getFirstBook = () => books[0]
 

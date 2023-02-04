@@ -1,30 +1,32 @@
 <script setup>
-import {books, updatedAt} from '@/books.json'
-
-const date = new Date(updatedAt)
-const updated = date.toJSON().substring(0, 10)
-
-const count = books.length
+import {booksCount, updated} from '@/services/books'
 </script>
 
 <template>
   <footer class="pt-12 px-4 text-center">
     <h4>Standard Ebooks alternative interface</h4>
 
-    <div class="text-xs">
-      <b>{{ count }}</b>
+    <div class="text-xs mb-1">
+      <b>{{ booksCount }}</b>
       books in library, last updated at
       {{ updated }}
     </div>
+
     <div class="text-xs">
       <a
+        href="https://www.freepik.com/free-vector/classic-border-set_4948926.htm#query=vintage%20frame&position=2&from_view=keyword"
+      >Classic border set by rawpixel.com</a>,
+      <a
+        href="https://www.freepik.com/free-vector/library-book-collection_843292.htm#query=open%20book&position=2&from_view=search&track=sph"
+      >book icons by alvaro_cabrera</a>,
+      <a
         href="https://www.freepik.com/free-vector/premium-quality-banner-collection_4168581.htm#query=ornament%20divider&position=4&from_view=keyword"
-      >Image by rawpixel.com</a>
-      on Freepik
+      >other decorations by rawpixel.com</a>
+      on&nbsp;Freepik
     </div>
 
     <div class="text-xs mt-4">
-      bonus_tm 2023,
+      2023 bonus_tm, v2.0,
       <a href="https://github.com/bonus-tm/sebooks" target="_blank">
         github
       </a>
@@ -33,6 +35,12 @@ const count = books.length
 </template>
 
 <style scoped>
+a {
+  @apply no-underline dark:text-yellow-100;
+}
+a:hover {
+  @apply underline;
+}
 footer {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 210 31'%3E%3Cpath fill='%23CA8A04' d='M112.1 30.5c-.9 0-1.8-.2-2.7-.6-2.4-1-4.8-3.7-3.5-8 .5-1.7 1.5-3.2 2.8-4.4l-1.2-.7C99.3 12 90.7 7.1 80.9 6c-5.9-.6-14.8.4-18.3 5.1 1.7 1 3.1 2.2 4 3.6.7 1.1 1.1 3.1.4 4.6-.5 1-1.4 1.5-2.6 1.6-1.3.1-2.4-.5-3.2-1.5a8.43 8.43 0 0 1-1.3-6.2c.1-.5.3-1 .5-1.4l-.6-.3c-6.3-2.6-13.5.4-18.8 2.5-7.4 3-14.6 4.6-21.5 4.6h-.1c-3.5 0-15.1-.6-19.3-8.2-.2-.4-.1-.8.3-1 .4-.2.8-.1 1 .3 3 5.5 11.2 7.4 18 7.4h.1c6.7 0 13.7-1.5 20.9-4.5 5.5-2.3 13-5.4 19.9-2.5.3.1.5.2.8.3 4-5.8 14.3-6.5 19.8-5.9 10.1 1.1 19.2 6.3 27.2 10.9l1.3.7c.1.1.3.2.4.2 3.1-2.4 7.4-4 11.3-4.5 3.6-.5 9.6 0 11.2 3.7.6 1.5.6 3.1-.2 4.6a7.7 7.7 0 0 1-5.2 3.6c-4.7.9-9-1.1-12.7-3.1l-4.2-2.4c-1.3 1.2-2.3 2.6-2.8 4.1-1.2 4.2 1.7 5.8 2.7 6.2 2 .8 4.1.4 4.9-.9.2-.4.7-.5 1-.3.4.2.5.7.3 1-.6 1.4-2.2 2.2-4 2.2Zm-.7-13.2c1.2.7 2.4 1.4 3.7 2.1 3.4 1.9 7.4 3.8 11.6 3 1.9-.4 3.4-1.4 4.2-2.8.6-1 .6-2.2.1-3.3-1.2-2.7-6.3-3.3-9.6-2.8-3.4.4-7.2 1.8-10 3.8Zm-49.6-4.8c-.2.4-.3.8-.4 1.2-.3 1.1-.1 3.5 1 4.9.5.7 1.2 1 1.9.9.7 0 1.1-.3 1.3-.8.4-.9.2-2.3-.3-3.1-.8-1.2-2-2.3-3.5-3.1Z'/%3E%3Cpath fill='%23CA8A04' d='M97.4 30.5c-1.8 0-3.3-.7-4.1-2.1-.2-.4-.1-.8.3-1 .4-.2.8-.1 1 .3.8 1.3 2.9 1.7 4.9.9.9-.4 3.9-2 2.7-6.2-.4-1.5-1.4-2.9-2.8-4.1l-4.2 2.4c-3.7 2-8 4.1-12.7 3.1-2.3-.5-4.3-1.8-5.2-3.6a5.3 5.3 0 0 1-.2-4.6c1.6-3.7 7.5-4.2 11.2-3.7 3.8.6 8.1 2.1 11.3 4.5.1-.1.3-.2.4-.2l1.3-.7c8-4.6 17.1-9.8 27.2-10.9 5.5-.6 15.8.1 19.8 5.9.3-.1.5-.2.8-.3 6.9-2.8 14.4.3 19.9 2.5 7.2 3 14.3 4.5 20.9 4.5h.1c6.7 0 15-2 18-7.4.2-.4.7-.5 1-.3.4.2.5.7.3 1-4.2 7.6-15.8 8.2-19.3 8.2-6.9 0-14.1-1.5-21.5-4.6-5.2-2.2-12.4-5.1-18.8-2.5l-.6.3c.2.5.4.9.5 1.4.5 1.6.1 4.5-1.3 6.2-.8 1-1.9 1.5-3.2 1.5-1.2-.1-2.1-.6-2.6-1.6-.7-1.4-.3-3.4.4-4.6.9-1.4 2.3-2.6 4-3.6-3.5-4.8-12.4-5.8-18.3-5.1-9.8 1-18.4 6-26.7 10.7l-1.2.7c1.3 1.3 2.4 2.8 2.8 4.4 1.2 4.3-1.1 7-3.5 8-.8.4-1.8.6-2.6.6ZM85.8 13.2c-3 0-6.4.8-7.3 3-.5 1.1-.4 2.2.1 3.3.7 1.4 2.3 2.5 4.2 2.8 4.2.8 8.2-1.1 11.6-3 1.2-.7 2.5-1.4 3.7-2.1-2.8-2-6.6-3.4-10.1-3.9-.6 0-1.4-.1-2.2-.1Zm61.9-.7c-1.5.9-2.7 2-3.5 3.1-.5.8-.8 2.2-.3 3.1.2.5.7.7 1.3.8.8 0 1.4-.3 1.9-.9 1.1-1.4 1.3-3.8 1-4.9-.1-.5-.2-.9-.4-1.2Z'/%3E%3Cpath fill='%23CA8A04' d='M104.7 10.2c-.2 0-.3 0-.4-.1C100.5 7.4 87.1 0 75.4 1.8c-.4.1-.8-.2-.9-.6-.1-.4.2-.8.6-.9C87-1.5 100 5.4 104.7 8.6c4.6-3.2 17.7-10.1 29.6-8.3.4.1.7.4.6.9-.1.4-.4.7-.9.6-11.6-1.8-25 5.6-28.8 8.3-.1.1-.3.1-.5.1Z'/%3E%3C/svg%3E");
   background-position: center top;

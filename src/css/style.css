@@ -25,7 +25,13 @@
   }
 
   a {
-    @apply text-yellow-800 dark:text-yellow-300 underline;
+    @apply text-yellow-800 dark:text-yellow-300;
+    @apply underline underline-offset-2 decoration-1 decoration-black dark:decoration-yellow-200;
+  }
+
+  a:hover {
+    @apply text-yellow-600 dark:text-yellow-200;
+    @apply decoration-yellow-600 dark:decoration-yellow-200;
   }
 
   p {
